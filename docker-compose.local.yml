@@ -1,0 +1,55 @@
+version: "3.3"
+
+services:
+
+    postgres:
+        restart: always
+        image: postgres:9.6-alpine
+        tty: true
+        stdin_open: true
+        environment:
+            - POSTGRES_PASSWORD=taiga
+            - POSTGRES_USER=taiga
+            - POSTGRES_DB=taiga
+        volumes:
+            - taiga-back-postgres:/var/lib/postgresql/data
+
+    django:
+        restart: always
+        image: registry.orus.io/taiga-back
+        tty: true
+        stdin_open: true
+        links:
+            - postgres
+            - rabbitmq
+        volumes:
+            - taiga-back-static:/usr/django/app/static
+            - taiga-back-media:/usr/django/app/media
+
+    rabbitmq:
+        restart: always
+        image: rabbitmq:3.6-alpine
+        hostname: taiga
+        volumes:
+            - taiga-rabbitmq:/var/lib/rabbitmq
+
+    caddy:
+        restart: always
+        image: registry.orus.io/caddy:0.10.10
+        tty: true
+        stdin_open: true
+        ports:
+            - 7416:7416
+        links:
+            - django
+        volumes:
+            - taiga-back-static:/srv/taiga-back-static
+            - taiga-back-media:/srv/taiga-back-media
+            - $PWD/../taiga-front/dist:/srv/taiga-front
+            - $PWD/Caddy:/etc/caddy
+
+volumes:
+    taiga-back-postgres:
+    taiga-back-static:
+    taiga-back-media:
+    taiga-rabbitmq:

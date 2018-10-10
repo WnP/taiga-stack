@@ -1,0 +1,36 @@
+0.0.0.0:7416 {
+
+    rewrite {
+        to {path} {path}/ /
+    }
+
+    root /srv/taiga-front
+
+}
+
+0.0.0.0:7416/api {
+
+
+    proxy / django:3031/api {
+        header_upstream X-Scheme {scheme}
+        transparent
+    }
+
+}
+
+0.0.0.0:7416/admin {
+
+    proxy / django:3031/admin {
+        header_upstream X-Scheme {scheme}
+        transparent
+    }
+
+}
+
+0.0.0.0:7416/static {
+    root /srv/taiga-back-static
+}
+
+0.0.0.0:7416/media {
+    root /srv/taiga-back-media
+}
