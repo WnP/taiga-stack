@@ -1,0 +1,7 @@
+{
+    "url": "amqp://taiga:secret@tasks.rabbitmq:5672/taiga",
+    "secret": "aw3+t2r(8(0kkrhg8)gx6i96v5^kv%6cfep9wxfom0%7dy0m9e",
+    "webSocketServer": {
+        "port": 8888
+    }
+}

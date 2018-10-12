@@ -30,6 +30,7 @@ SITES["front"]["domain"] = "tg.chailloux.me"  # noqa
 PUBLIC_REGISTER_ENABLED = False
 DEFAULT_FROM_EMAIL = "no-reply@example.com"
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
+SECRET_KEY = "aw3+t2r(8(0kkrhg8)gx6i96v5^kv%6cfep9wxfom0%7dy0m9e"
 
 # ADMINS = (
 #     ("Admin", "example@example.com"),

@@ -11,7 +11,7 @@
 0.0.0.0:7416/api {
 
 
-    proxy / django:8000/api {
+    proxy / tasks.django:8000/api {
         header_upstream X-Scheme {scheme}
         transparent
     }
@@ -20,7 +20,7 @@
 
 0.0.0.0:7416/admin {
 
-    proxy / django:8000/admin {
+    proxy / tasks.django:8000/admin {
         header_upstream X-Scheme {scheme}
         transparent
     }
@@ -33,4 +33,14 @@
 
 0.0.0.0:7416/media {
     root /srv/taiga-back-media
+}
+
+0.0.0.0:7416/events {
+
+
+    proxy / tasks.taiga_events:8888/events {
+        header_upstream X-Scheme {scheme}
+        transparent
+    }
+
 }

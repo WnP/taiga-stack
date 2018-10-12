@@ -14,6 +14,8 @@ configs:
         file: ./local.py
     django_celery_settings:
         file: ./celery_local.py
+    taiga_events_conf:
+        file: ./taiga-events/config.json
     caddyfile:
         file: ./Caddy/Caddyfile
     front_json:
@@ -72,6 +74,17 @@ services:
         deploy:
             mode: replicated
             replicas: 1
+        configs:
+              - source: taiga_events_conf
+                target: /srv/taiga-events/config.json
+
+    taiga_events:
+        restart: always
+        image: registry.orus.io/taiga-events
+        tty: true
+        stdin_open: true
+        networks:
+            - taiga_network
 
     caddy:
         restart: always
