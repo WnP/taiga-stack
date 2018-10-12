@@ -12,6 +12,8 @@ networks:
 configs:
     django_settings:
         file: ./local.py
+    django_celery_settings:
+        file: ./celery_local.py
     caddyfile:
         file: ./Caddy/Caddyfile
     front_json:
@@ -22,6 +24,7 @@ volumes:
     taiga-back-static:
     taiga-back-media:
     taiga-rabbitmq:
+    taiga-redis:
 
 services:
 
@@ -41,6 +44,8 @@ services:
         configs:
               - source: django_settings
                 target: /usr/django/app/settings/local.py
+              - source: django_celery_settings
+                target: /usr/django/app/settings/celery_local.py
         deploy:
             mode: replicated
             replicas: 1
@@ -53,6 +58,17 @@ services:
             - taiga_network
         volumes:
             - taiga-rabbitmq:/var/lib/rabbitmq
+        deploy:
+            mode: replicated
+            replicas: 1
+
+    redis:
+        restart: always
+        image: redis:4-alpine
+        networks:
+            - taiga_network
+        volumes:
+            - taiga-redis:/data
         deploy:
             mode: replicated
             replicas: 1

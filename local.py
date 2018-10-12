@@ -172,7 +172,7 @@ EVENTS_PUSH_BACKEND_OPTIONS = {
 # Set to True to enable celery and work in async mode or False
 # to disable it and work in sync mode. You can find the celery
 # settings in settings/celery.py and settings/celery-local.py
-# CELERY_ENABLED = True
+CELERY_ENABLED = True
 
 #########################################
 # IMPORTERS
