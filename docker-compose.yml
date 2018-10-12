@@ -7,6 +7,20 @@ networks:
   http_network:
     external: true
 
+configs:
+    django_settings:
+        file: ./local.py
+    caddyfile:
+        file: ./Caddy/Caddyfile
+    front_json:
+        file: ./front/conf.json
+
+volumes:
+    taiga-back-postgres:
+    taiga-back-static:
+    taiga-back-media:
+    taiga-rabbitmq:
+
 services:
 
     postgres:
@@ -84,17 +98,3 @@ services:
                 - traefik.frontend.rule=Host:tg.chailloux.me
                 - traefik.port=7416
                 - traefik.docker.network=http_network
-
-configs:
-    django_settings:
-        file: ./local.py
-    caddyfile:
-        file: ./Caddy/Caddyfile
-    front_json:
-        file: ./front/conf.json
-
-volumes:
-    taiga-back-postgres:
-    taiga-back-static:
-    taiga-back-media:
-    taiga-rabbitmq:
