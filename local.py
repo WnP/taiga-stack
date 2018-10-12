@@ -42,7 +42,7 @@ DATABASES = {
             "NAME": "taiga",
             'USER': 'taiga',
             'PASSWORD': 'taiga',
-            'HOST': 'localhost',
+            'HOST': 'tasks.pgpool',
             'PORT': '5432',
         }
 }
