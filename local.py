@@ -23,10 +23,10 @@ from .common import *  # noqa
 #########################################
 
 DEBUG = False
-MEDIA_URL = "https://taiga.chailloux.me/media/"
-STATIC_URL = "https://taiga.chailloux.me/static/"
+MEDIA_URL = "https://tg.chailloux.me/media/"
+STATIC_URL = "https://tg.chailloux.me/static/"
 SITES["front"]["scheme"] = "https"  # noqa
-SITES["front"]["domain"] = "taiga.chailloux.me"  # noqa
+SITES["front"]["domain"] = "tg.chailloux.me"  # noqa
 PUBLIC_REGISTER_ENABLED = False
 DEFAULT_FROM_EMAIL = "no-reply@example.com"
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
@@ -53,7 +53,7 @@ INSTALLED_APPS = APPS[:tgbi] + ["taiga_contrib_time_tracking"] + APPS[tgbi:]
 
 EVENTS_PUSH_BACKEND = "taiga.events.backends.rabbitmq.EventsPushBackend"
 EVENTS_PUSH_BACKEND_OPTIONS = {
-    "url": "amqp://taiga:secret@localhost:5672/taiga"
+    "url": "amqp://taiga:secret@tasks.rabbitmq:5672/taiga"
 }
 
 # SITES = {
