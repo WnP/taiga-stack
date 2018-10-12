@@ -6,7 +6,7 @@ networks:
       attachable: true
   http_network:
     external: true
-  pgsql_9-6_cluster:
+  pgsql_ha_9-6:
     external: true
 
 configs:
@@ -32,7 +32,7 @@ services:
         stdin_open: true
         networks:
             - taiga_network
-            - pgsql_9-6_cluster
+            - pgsql_ha_9-6
         depends_on:
             - rabbitmq
         volumes:
