@@ -11,7 +11,7 @@
 0.0.0.0:7416/api {
 
 
-    proxy / django:3031/api {
+    proxy / django:8000/api {
         header_upstream X-Scheme {scheme}
         transparent
     }
@@ -20,7 +20,7 @@
 
 0.0.0.0:7416/admin {
 
-    proxy / django:3031/admin {
+    proxy / django:8000/admin {
         header_upstream X-Scheme {scheme}
         transparent
     }
