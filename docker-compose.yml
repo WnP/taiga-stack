@@ -54,6 +54,7 @@ services:
     celery:
         restart: always
         image: registry.orus.io/taiga-back
+        user: django
         entrypoint: /usr/local/bin/celery
         command: -A taiga worker -c 4 -l INFO
         networks:
