@@ -33,8 +33,28 @@ services:
     django:
         restart: always
         image: registry.orus.io/taiga-back
-        tty: true
-        stdin_open: true
+        networks:
+            - taiga_network
+            - pgsql_ha_9-6
+        depends_on:
+            - rabbitmq
+            - redis
+        volumes:
+            - taiga-back-static:/usr/django/app/static
+            - taiga-back-media:/usr/django/app/media
+        configs:
+              - source: django_settings
+                target: /usr/django/app/settings/local.py
+              - source: django_celery_settings
+                target: /usr/django/app/settings/celery_local.py
+        deploy:
+            mode: replicated
+            replicas: 1
+
+    celery:
+        restart: always
+        image: registry.orus.io/taiga-back
+        command: celery -A taiga worker -c 4
         networks:
             - taiga_network
             - pgsql_ha_9-6
