@@ -39,8 +39,7 @@
 
 
     proxy / tasks.taiga_events:8888/events {
-        header_upstream X-Scheme {scheme}
-        transparent
+        websocket
     }
 
 }
