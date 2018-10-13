@@ -56,7 +56,7 @@ services:
         image: registry.orus.io/taiga-back
         user: django
         entrypoint: /usr/local/bin/celery
-        command: -A taiga worker -c 4 -l INFO
+        command: -A taiga worker -c 4 -l INFO -Q tasks,transient
         networks:
             - taiga_network
             - pgsql_ha_9-6
