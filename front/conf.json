@@ -1,6 +1,6 @@
 {
     "api": "https://tg.chailloux.me/api/v1/",
-    "eventsUrl": null,
+    "eventsUrl": "https://tg.chailloux.me/events/",
     "eventsMaxMissedHeartbeats": 5,
     "eventsHeartbeatIntervalTime": 60000,
     "eventsReconnectTryInterval": 10000,
