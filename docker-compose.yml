@@ -40,6 +40,7 @@ services:
             - pgsql_ha_9-6
         depends_on:
             - rabbitmq
+            - redis
         volumes:
             - taiga-back-static:/usr/django/app/static
             - taiga-back-media:/usr/django/app/media
@@ -93,6 +94,7 @@ services:
         stdin_open: true
         depends_on:
             - django
+            - taiga_events
         networks:
             - taiga_network
             - http_network
