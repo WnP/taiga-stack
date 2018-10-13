@@ -103,7 +103,7 @@ EVENTS_PUSH_BACKEND_OPTIONS = {
 #########################################
 
 # DEFAULT_FROM_EMAIL = "john@doe.com"
-# CHANGE_NOTIFICATIONS_MIN_INTERVAL = 300 #seconds
+CHANGE_NOTIFICATIONS_MIN_INTERVAL = 300  # seconds
 
 # EMAIL SETTINGS EXAMPLE
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
