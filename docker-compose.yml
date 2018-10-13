@@ -54,7 +54,8 @@ services:
     celery:
         restart: always
         image: registry.orus.io/taiga-back
-        command: celery -A taiga worker -c 4
+        entrypoint: /usr/local/bin/celery
+        command: -A taiga worker -c 4
         networks:
             - taiga_network
             - pgsql_ha_9-6
