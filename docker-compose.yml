@@ -51,6 +51,29 @@ services:
             mode: replicated
             replicas: 1
 
+    celery:
+        restart: always
+        image: registry.orus.io/taiga-back
+        entrypoint: /usr/local/bin/celery
+        command: -A taiga worker -c 4 -l INFO
+        networks:
+            - taiga_network
+            - pgsql_ha_9-6
+        depends_on:
+            - rabbitmq
+            - redis
+        volumes:
+            - taiga-back-static:/usr/django/app/static
+            - taiga-back-media:/usr/django/app/media
+        configs:
+              - source: django_settings
+                target: /usr/django/app/settings/local.py
+              - source: django_celery_settings
+                target: /usr/django/app/settings/celery_local.py
+        deploy:
+            mode: replicated
+            replicas: 1
+
     rabbitmq:
         restart: always
         image: rabbitmq:3.6-alpine
