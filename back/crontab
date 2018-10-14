@@ -1,0 +1,2 @@
+*/5 * * * * root /usr/local/bin/python /usr/django/app/manage.py send_notifications 2>&1 > /dev/pts/1
+

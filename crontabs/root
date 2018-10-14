@@ -1,2 +1,0 @@
-*/5 * * * * /usr/local/bin/python /usr/django/app/manage.py send_notifications
-
