@@ -11,15 +11,17 @@ networks:
 
 configs:
     django_settings:
-        file: ./local.py
+        file: ./back/local.py
     django_celery_settings:
-        file: ./celery_local.py
+        file: ./back/celery_local.py
     taiga_events_conf:
-        file: ./taiga-events/config.json
+        file: ./events/config.json
     caddyfile:
         file: ./Caddy/Caddyfile
     front_json:
         file: ./front/conf.json
+    crontab:
+        file: ./crontabs/root
 
 volumes:
     taiga-back-postgres:
@@ -71,6 +73,32 @@ services:
                 target: /usr/django/app/settings/local.py
               - source: django_celery_settings
                 target: /usr/django/app/settings/celery_local.py
+        deploy:
+            mode: replicated
+            replicas: 1
+
+    notifications:
+        restart: always
+        image: registry.orus.io/taiga-back
+        entrypoint: /usr/sbin/crond
+        command: -f -c /etc/crontabs
+        networks:
+            - taiga_network
+            - pgsql_ha_9-6
+        depends_on:
+            - rabbitmq
+            - redis
+        volumes:
+            - taiga-back-static:/usr/django/app/static
+            - taiga-back-media:/usr/django/app/media
+        configs:
+              - source: django_settings
+                target: /usr/django/app/settings/local.py
+              - source: django_celery_settings
+                target: /usr/django/app/settings/celery_local.py
+              - source: crontab
+                target: /etc/crontabs/root
+                mode: 0600
         deploy:
             mode: replicated
             replicas: 1
