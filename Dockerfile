@@ -23,7 +23,7 @@ RUN apt-get update \
     && apt-get install -y \
     flex bison \
     libfreetype6 zlib1g libncurses5 \
-    curl git gettext libxml2 \
+    cron curl git gettext libxml2 \
     && pip install -r /tmp/requirements.txt -f /tmp/wheels --no-index \
     && rm -r /tmp/requirements.txt /tmp/wheels \
     && apt-get remove git -y \
@@ -35,7 +35,7 @@ RUN mkdir -p /usr/django/app/logs && chown -R django:django /usr/django/app/logs
     && chown -R django:django /usr/django/app/media
 COPY ./taiga-contrib-time-tracking /tmp/taiga-contrib-time-tracking
 RUN pip install /tmp/taiga-contrib-time-tracking/back && rm -rf taiga-contrib-time-tracking
-COPY ./docker/local.py /usr/django/app/settings/local.py
+COPY ./docker/back/local.py /usr/django/app/settings/local.py
 WORKDIR /usr/django/app
 # CMD ["python", "manage.py", "runserver"]
 CMD ["gunicorn", "-c", "/etc/gunicorn/gunicorn.conf", "--chdir", "/usr/django/app", "--bind", "0.0.0.0:8000", "taiga.wsgi"]
