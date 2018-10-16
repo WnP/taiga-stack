@@ -24,11 +24,8 @@ configs:
         file: ./back/crontab
 
 volumes:
-    taiga-back-postgres:
     taiga-back-static:
     taiga-back-media:
-    taiga-rabbitmq:
-    taiga-redis:
 
 services:
 
@@ -108,8 +105,6 @@ services:
         hostname: taiga
         networks:
             - taiga_network
-        volumes:
-            - taiga-rabbitmq:/var/lib/rabbitmq
         deploy:
             mode: replicated
             replicas: 1
@@ -119,8 +114,6 @@ services:
         image: redis:4-alpine
         networks:
             - taiga_network
-        volumes:
-            - taiga-redis:/data
         deploy:
             mode: replicated
             replicas: 1
