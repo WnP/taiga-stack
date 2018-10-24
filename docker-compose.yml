@@ -17,7 +17,7 @@ configs:
     taiga_events_conf:
         file: ./events/config.json
     caddyfile:
-        file: ./Caddy/Caddyfile
+        file: ./front/Caddy/Caddyfile
     front_json:
         file: ./front/conf.json
     crontab:
