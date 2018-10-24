@@ -156,6 +156,6 @@ services:
             replicas: 1
             labels:
                 - traefik.enable=true
-                - traefik.frontend.rule=Host:tg.chailloux.me
+                - traefik.frontend.rule=Host:project.orus.io
                 - traefik.port=7416
                 - traefik.docker.network=http_network
