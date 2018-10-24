@@ -31,7 +31,7 @@ services:
 
     django:
         restart: always
-        image: registry.orus.io/taiga-back
+        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b
         networks:
             - taiga_network
             - pgsql_ha_9-6
@@ -52,7 +52,7 @@ services:
 
     celery:
         restart: always
-        image: registry.orus.io/taiga-back
+        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b
         user: django
         entrypoint: /usr/local/bin/celery
         command: -A taiga worker -c 4 -l INFO -Q tasks,transient
@@ -76,7 +76,7 @@ services:
 
     notifications:
         restart: always
-        image: registry.orus.io/taiga-back
+        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b
         entrypoint: /usr/sbin/cron
         command: -f
         networks:
@@ -123,15 +123,18 @@ services:
 
     taiga_events:
         restart: always
-        image: registry.orus.io/taiga-events
+        image: registry.orus.io/taiga-events:_3583834
         tty: true
         stdin_open: true
         networks:
             - taiga_network
+        deploy:
+            mode: replicated
+            replicas: 1
 
     caddy:
         restart: always
-        image: registry.orus.io/taiga-front
+        image: registry.orus.io/taiga-front:3.4.0_889736a6
         tty: true
         stdin_open: true
         depends_on:
