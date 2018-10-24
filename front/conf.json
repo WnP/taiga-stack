@@ -1,5 +1,5 @@
 {
-    "api": "https://tg.chailloux.me/api/v1/",
+    "api": "https://taiga.orus.io/api/v1/",
     "eventsUrl": "events/",
     "eventsMaxMissedHeartbeats": 5,
     "eventsHeartbeatIntervalTime": 60000,
@@ -9,9 +9,9 @@
     "defaultLanguage": "en",
     "themes": ["taiga"],
     "defaultTheme": "taiga",
-    "publicRegisterEnabled": true,
+    "publicRegisterEnabled": false,
+    "gravatar": false,
     "feedbackEnabled": true,
-    "supportUrl": "https://tree.taiga.io/support",
     "privacyPolicyUrl": null,
     "termsOfServiceUrl": null,
     "GDPRUrl": null,
@@ -19,6 +19,5 @@
     "contribPlugins": [],
     "tribeHost": null,
     "importers": [],
-    "gravatar": true,
     "rtlLanguages": ["fa"]
 }
