@@ -213,3 +213,9 @@ CELERY_ENABLED = True
 #     "app_id": "XXXXXX_get_a_valid_app_id_from_asana_XXXXXX",
 #     "app_secret": "XXXXXX_get_a_valid_app_secret_from_asana_XXXXXX"
 # }
+
+
+def load_secrets():
+    import imp
+    secrets = imp.load_source('taiga-orus-io', '/run/secrets')  # noqa TODO
+    from secrets import *  # noqa
