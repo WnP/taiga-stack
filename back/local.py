@@ -217,5 +217,7 @@ CELERY_ENABLED = True
 
 def load_secrets():
     import imp
-    secrets = imp.load_source('taiga-orus-io', '/run/secrets')  # noqa TODO
+    secrets = imp.load_source(  # noqa TODO
+        'taiga-back-settings-orus-io', '/run/secrets'
+    )
     from secrets import *  # noqa
