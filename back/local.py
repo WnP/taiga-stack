@@ -214,8 +214,5 @@ CELERY_ENABLED = True
 #     "app_secret": "XXXXXX_get_a_valid_app_secret_from_asana_XXXXXX"
 # }
 
-import imp
-django_secrets = imp.load_source(  # noqa
-    'django_secrets', '/run/secrets/taiga-back-settings-orus-io'
-)
-from django_secrets import *  # noqa
+with open('/run/secrets/taiga-back-settings-orus-io') as django_secrets:
+    exec(django_secrets.read())
