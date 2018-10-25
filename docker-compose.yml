@@ -14,14 +14,18 @@ configs:
         file: ./back/local.py
     django_celery_settings:
         file: ./back/celery_local.py
-    taiga_events_conf:
-        file: ./events/config.json
     caddyfile:
         file: ./front/Caddy/Caddyfile
     front_json:
         file: ./front/conf.json
     crontab:
         file: ./back/crontab
+
+secrets:
+    taiga-back-settings-orus-io:
+        external: true
+    taiga-events-config:
+        external: true
 
 volumes:
     taiga-back-static:
@@ -46,6 +50,8 @@ services:
                 target: /usr/django/app/settings/local.py
               - source: django_celery_settings
                 target: /usr/django/app/settings/celery_local.py
+        secrets:
+            - source: taiga-back-settings-orus-io
         deploy:
             mode: replicated
             replicas: 1
@@ -70,6 +76,8 @@ services:
                 target: /usr/django/app/settings/local.py
               - source: django_celery_settings
                 target: /usr/django/app/settings/celery_local.py
+        secrets:
+            - source: taiga-back-settings-orus-io
         deploy:
             mode: replicated
             replicas: 1
@@ -95,6 +103,8 @@ services:
                 target: /usr/django/app/settings/celery_local.py
               - source: crontab
                 target: /etc/crontab
+        secrets:
+            - source: taiga-back-settings-orus-io
         deploy:
             mode: replicated
             replicas: 1
@@ -117,15 +127,15 @@ services:
         deploy:
             mode: replicated
             replicas: 1
-        configs:
-              - source: taiga_events_conf
-                target: /srv/taiga-events/config.json
 
     taiga_events:
         restart: always
         image: registry.orus.io/taiga-events:_3583834
         tty: true
         stdin_open: true
+        secrets:
+            - source: taiga-events-config
+              target: config.json
         networks:
             - taiga_network
         deploy:
