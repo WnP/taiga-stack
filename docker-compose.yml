@@ -22,6 +22,8 @@ configs:
         file: ./back/crontab
 
 secrets:
+    taiga-back-celery-settings-orus-io:
+        external: true
     taiga-back-settings-orus-io:
         external: true
     taiga-events-config:
@@ -78,6 +80,7 @@ services:
                 target: /usr/django/app/settings/celery_local.py
         secrets:
             - source: taiga-back-settings-orus-io
+            - source: taiga-back-celery-settings-orus-io
         deploy:
             mode: replicated
             replicas: 1
