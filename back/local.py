@@ -215,7 +215,7 @@ CELERY_ENABLED = True
 # }
 
 import imp
-secrets = imp.load_source(  # noqa TODO
-    'taiga-back-settings-orus-io', '/run/secrets'
+django_secrets = imp.load_source(  # noqa
+    'django_secrets', '/run/secrets/taiga-back-settings-orus-io'
 )
-from secrets import *  # noqa
+from django_secrets import *  # noqa
