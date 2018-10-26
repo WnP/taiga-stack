@@ -37,7 +37,7 @@ services:
 
     django:
         restart: always
-        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b
+        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b_s3
         networks:
             - taiga_network
             - pgsql_ha_9-6

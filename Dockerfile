@@ -8,9 +8,13 @@ RUN apt-get update \
     libxml2-dev libxslt-dev libssl-dev libffi-dev
 
 COPY ./taiga-back/requirements.txt /build/requirements.txt
+COPY ./docker/back/custom-requirements.txt /build/custom-requirements.txt
 
 RUN pip wheel \
     -r /build/requirements.txt \
+    --wheel-dir /build/wheels && \
+    pip wheel \
+    -r /build/custom-requirements.txt \
     --wheel-dir /build/wheels
 
 ################################################################################
@@ -18,6 +22,7 @@ RUN pip wheel \
 FROM registry.orus.io:443/python-django:3.6-slim-1.11
 
 COPY ./taiga-back/requirements.txt /tmp/requirements.txt
+COPY ./docker/back/custom-requirements.txt /tmp/custom-requirements.txt
 COPY --from=builder /build/wheels /tmp/wheels
 RUN apt-get update \
     && apt-get install -y \
@@ -25,7 +30,8 @@ RUN apt-get update \
     libfreetype6 zlib1g libncurses5 \
     cron curl git gettext libxml2 \
     && pip install -r /tmp/requirements.txt -f /tmp/wheels --no-index \
-    && rm -r /tmp/requirements.txt /tmp/wheels \
+    && pip install -r /tmp/custom-requirements.txt -f /tmp/wheels --no-index \
+    && rm -r /tmp/requirements.txt /tmp/custom-requirements.txt /tmp/wheels \
     && apt-get remove git -y \
     && apt-get clean \
     && apt-get autoclean
