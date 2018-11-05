@@ -6,8 +6,6 @@ networks:
       attachable: true
   http_network:
     external: true
-  pgsql_ha_9-6:
-    external: true
 
 configs:
     django_settings:
@@ -35,12 +33,31 @@ volumes:
 
 services:
 
+    postgres:
+        restart: always
+        image: postgres:9.6-alpine
+        tty: true
+        stdin_open: true
+        environment:
+            - POSTGRES_PASSWORD=taiga
+            - POSTGRES_USER=taiga
+            - POSTGRES_DB=taiga
+        networks:
+            - taiga_network
+        volumes:
+            - taiga-back-postgres:/var/lib/postgresql/data
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.pgsql_ha_node == 1
+
     django:
         restart: always
         image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b_s3
         networks:
             - taiga_network
-            - pgsql_ha_9-6
         depends_on:
             - rabbitmq
             - redis
@@ -67,7 +84,6 @@ services:
         command: -A taiga worker -c 4 -l INFO -Q tasks,transient
         networks:
             - taiga_network
-            - pgsql_ha_9-6
         depends_on:
             - rabbitmq
             - redis
@@ -93,7 +109,6 @@ services:
         command: -f
         networks:
             - taiga_network
-            - pgsql_ha_9-6
         depends_on:
             - rabbitmq
             - redis
