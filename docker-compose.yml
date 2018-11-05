@@ -30,6 +30,7 @@ secrets:
 volumes:
     taiga-back-static:
     taiga-back-media:
+    taiga-back-postgres:
 
 services:
 
