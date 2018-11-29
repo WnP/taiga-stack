@@ -1,5 +1,5 @@
 {
-    "api": "https://project.orus.io/api/v1/",
+    "api": "https://taiga.chailloux.me/api/v1/",
     "eventsUrl": "events/",
     "eventsMaxMissedHeartbeats": 5,
     "eventsHeartbeatIntervalTime": 60000,

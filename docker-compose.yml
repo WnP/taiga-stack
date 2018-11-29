@@ -50,9 +50,6 @@ services:
         deploy:
             mode: replicated
             replicas: 1
-            placement:
-                constraints:
-                    - node.labels.pgsql_ha_node == 1
 
     django:
         restart: always
@@ -79,7 +76,7 @@ services:
 
     celery:
         restart: always
-        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b
+        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b_s3
         user: django
         entrypoint: /usr/local/bin/celery
         command: -A taiga worker -c 4 -l INFO -Q tasks,transient
@@ -105,7 +102,7 @@ services:
 
     notifications:
         restart: always
-        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b
+        image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b_s3
         entrypoint: /usr/sbin/cron
         command: -f
         networks:
@@ -187,6 +184,6 @@ services:
             replicas: 1
             labels:
                 - traefik.enable=true
-                - traefik.frontend.rule=Host:project.orus.io
+                - traefik.frontend.rule=Host:taiga.chailloux.me
                 - traefik.port=7416
                 - traefik.docker.network=http_network
