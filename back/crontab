@@ -1,2 +1,2 @@
-*/5 * * * * root /usr/local/bin/python /usr/django/app/manage.py send_notifications
+*/5 * * * * root /usr/local/bin/python /usr/django/app/manage.py send_notifications > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
 
