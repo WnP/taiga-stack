@@ -9,15 +9,17 @@ networks:
 
 configs:
     django_settings:
-        file: ./back/local.py
+        external: true
     django_celery_settings:
-        file: ./back/celery_local.py
+        external: true
     caddyfile:
-        file: ./front/Caddy/Caddyfile
+        external: true
     front_json:
-        file: ./front/conf.json
+        external: true
     crontab:
-        file: ./back/crontab
+        external: true
+    taiga_ssh_authorized_keys:
+        external: true
 
 secrets:
     taiga-back-celery-settings-orus-io:
@@ -33,6 +35,25 @@ volumes:
     taiga-back-postgres:
 
 services:
+
+    ssh:
+        image: dockerhub.xcg.io/cloudcrane/alpine-ssh:latest
+        networks:
+            - taiga_network
+        ports:
+            - 2201:22
+        configs:
+            - source: taiga_ssh_authorized_keys
+              target: /home/anon/.ssh/authorized_keys
+              uid: "133742"
+              gid: "133742"
+              mode: 0600
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     postgres:
         restart: always
