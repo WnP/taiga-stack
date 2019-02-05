@@ -20,6 +20,10 @@ configs:
         external: true
     taiga_ssh_authorized_keys:
         external: true
+    taiga_maintenance_authorized_keys:
+        external: true
+    taiga_do_backup:
+        external: true
 
 secrets:
     taiga-back-celery-settings-orus-io:
@@ -27,6 +31,8 @@ secrets:
     taiga-back-settings-orus-io:
         external: true
     taiga-back-events-config:
+        external: true
+    taiga_maintenance.env:
         external: true
 
 volumes:
@@ -48,6 +54,29 @@ services:
               uid: "133742"
               gid: "133742"
               mode: 0600
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
+
+    maintenance:
+        image: dockerhub.xcg.io/cloudcrane/maintenance:1.0.7
+        hostname: portainer-maintenance
+        networks:
+            - http
+            - taiga_network
+        ports:
+            - "2203:22"
+        secrets:
+            - source: taiga_maintenance.env
+              target: /run/maintenance.env
+        configs:
+            - source: taiga_maintenance_authorized_keys
+              target: /srv/authorized_keys
+            - source: taiga_do_backup
+              target: /srv/scripts/do_backup
         deploy:
             mode: replicated
             replicas: 1

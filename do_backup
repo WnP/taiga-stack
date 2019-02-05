@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import subprocess
+
+from cccptools.restic import DEFAULT_FORGET_POLICY, restic
+
+domain = os.getenv("DOMAIN")
+dump = "/tmp/taiga.dump"
+
+with open(dump, "wb") as out:
+    subprocess.run(f"pg_dump -Fc taiga".split(" "), stdout=out)
+
+restic(f"backup --host {domain} --tag postgres {dump}".split(" "))
+restic(
+    f"forget --host {domain} --tag postgres".split(" ") + DEFAULT_FORGET_POLICY
+)
+
+subprocess.run(f"rm {dump}".split(" "))
