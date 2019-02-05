@@ -4,7 +4,7 @@ networks:
   taiga_network:
       driver: overlay
       attachable: true
-  http_network:
+  http:
     external: true
 
 configs:
@@ -212,7 +212,7 @@ services:
             - taiga_events
         networks:
             - taiga_network
-            - http_network
+            - http
         volumes:
             - taiga-back-static:/srv/taiga-back-static
             - taiga-back-media:/srv/taiga-back-media
