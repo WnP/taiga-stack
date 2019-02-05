@@ -183,7 +183,7 @@ services:
 
     caddy:
         restart: always
-        image: registry.orus.io/taiga-front:3.4.0_889736a6
+        image: registry.orus.io/taiga-front:3.4.0_0f6220f4
         tty: true
         stdin_open: true
         depends_on:
