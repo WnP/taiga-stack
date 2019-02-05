@@ -24,7 +24,7 @@ secrets:
         external: true
     taiga-back-settings-orus-io:
         external: true
-    taiga-events-config:
+    taiga-back-events-config:
         external: true
 
 volumes:
@@ -52,7 +52,7 @@ services:
             replicas: 1
             placement:
                 constraints:
-                    - node.labels.pgsql_ha_node == 1
+                    - node.labels.taiga == 1
 
     django:
         restart: always
@@ -76,6 +76,9 @@ services:
         deploy:
             mode: replicated
             replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     celery:
         restart: always
@@ -102,6 +105,9 @@ services:
         deploy:
             mode: replicated
             replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     notifications:
         restart: always
@@ -129,6 +135,9 @@ services:
         deploy:
             mode: replicated
             replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     rabbitmq:
         restart: always
@@ -139,6 +148,9 @@ services:
         deploy:
             mode: replicated
             replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     redis:
         restart: always
@@ -148,6 +160,9 @@ services:
         deploy:
             mode: replicated
             replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     taiga_events:
         restart: always
@@ -155,13 +170,16 @@ services:
         tty: true
         stdin_open: true
         secrets:
-            - source: taiga-events-config
+            - source: taiga-back-events-config
               target: config.json
         networks:
             - taiga_network
         deploy:
             mode: replicated
             replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     caddy:
         restart: always
@@ -189,4 +207,7 @@ services:
                 - traefik.enable=true
                 - traefik.frontend.rule=Host:project.orus.io
                 - traefik.port=7416
-                - traefik.docker.network=http_network
+                - traefik.docker.network=http
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
