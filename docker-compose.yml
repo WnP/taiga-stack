@@ -8,21 +8,19 @@ networks:
     external: true
 
 configs:
-    django_settings:
+    taiga_django_settings:
         external: true
-    django_celery_settings:
+    taiga_django_celery_settings:
         external: true
-    caddyfile:
+    taiga_caddyfile:
         external: true
-    front_json:
+    taiga_front_json:
         external: true
-    crontab:
+    taiga_crontab:
         external: true
     taiga_ssh_authorized_keys:
         external: true
     taiga_maintenance_authorized_keys:
-        external: true
-    taiga_do_backup:
         external: true
 
 secrets:
@@ -32,15 +30,38 @@ secrets:
         external: true
     taiga-back-events-config:
         external: true
-    taiga_maintenance.env:
+    taiga_maintenance.yml:
+        external: true
+    taiga-rabbitmq-setup.sh:
         external: true
 
 volumes:
-    taiga-back-static:
-    taiga-back-media:
-    taiga-back-postgres:
+    static:
+    media:
+    postgres:
 
 services:
+
+    maintenance:
+        image: dockerhub.xcg.io/cloudcrane/maintenance:3.0.4
+        hostname: taiga-maintenance
+        networks:
+            - http
+            - taiga_network
+        ports:
+            - "2203:22"
+        secrets:
+            - source: taiga_maintenance.yml
+              target: /run/maintenance.yml
+        configs:
+            - source: taiga_maintenance_authorized_keys
+              target: /srv/authorized_keys
+        deploy:
+            mode: replicated
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.taiga == 1
 
     ssh:
         image: dockerhub.xcg.io/cloudcrane/alpine-ssh:latest
@@ -61,34 +82,8 @@ services:
                 constraints:
                     - node.labels.taiga == 1
 
-    maintenance:
-        image: dockerhub.xcg.io/cloudcrane/maintenance:1.0.7
-        hostname: portainer-maintenance
-        networks:
-            - http
-            - taiga_network
-        ports:
-            - "2203:22"
-        secrets:
-            - source: taiga_maintenance.env
-              target: /run/maintenance.env
-        configs:
-            - source: taiga_maintenance_authorized_keys
-              target: /srv/authorized_keys
-            - source: taiga_do_backup
-              target: /srv/scripts/do_backup
-        deploy:
-            mode: replicated
-            replicas: 1
-            placement:
-                constraints:
-                    - node.labels.taiga == 1
-
     postgres:
-        restart: always
         image: postgres:9.6-alpine
-        tty: true
-        stdin_open: true
         environment:
             - POSTGRES_PASSWORD=taiga
             - POSTGRES_USER=taiga
@@ -96,7 +91,7 @@ services:
         networks:
             - taiga_network
         volumes:
-            - taiga-back-postgres:/var/lib/postgresql/data
+            - postgres:/var/lib/postgresql/data
         deploy:
             mode: replicated
             replicas: 1
@@ -105,7 +100,6 @@ services:
                     - node.labels.taiga == 1
 
     django:
-        restart: always
         image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b_s3
         networks:
             - taiga_network
@@ -113,12 +107,12 @@ services:
             - rabbitmq
             - redis
         volumes:
-            - taiga-back-static:/usr/django/app/static
-            - taiga-back-media:/usr/django/app/media
+            - static:/usr/django/app/static
+            - media:/usr/django/app/media
         configs:
-              - source: django_settings
+              - source: taiga_django_settings
                 target: /usr/django/app/settings/local.py
-              - source: django_celery_settings
+              - source: taiga_django_celery_settings
                 target: /usr/django/app/settings/celery_local.py
         secrets:
             - source: taiga-back-settings-orus-io
@@ -131,7 +125,6 @@ services:
                     - node.labels.taiga == 1
 
     celery:
-        restart: always
         image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b_s3
         user: django
         entrypoint: /usr/local/bin/celery
@@ -142,12 +135,12 @@ services:
             - rabbitmq
             - redis
         volumes:
-            - taiga-back-static:/usr/django/app/static
-            - taiga-back-media:/usr/django/app/media
+            - static:/usr/django/app/static
+            - media:/usr/django/app/media
         configs:
-              - source: django_settings
+              - source: taiga_django_settings
                 target: /usr/django/app/settings/local.py
-              - source: django_celery_settings
+              - source: taiga_django_celery_settings
                 target: /usr/django/app/settings/celery_local.py
         secrets:
             - source: taiga-back-settings-orus-io
@@ -160,7 +153,6 @@ services:
                     - node.labels.taiga == 1
 
     notifications:
-        restart: always
         image: registry.orus.io/taiga-back:3.4.0_2bf64a8f_timetracking_0.2.2_4f1005b_s3
         entrypoint: /usr/sbin/cron
         command: -f
@@ -170,14 +162,14 @@ services:
             - rabbitmq
             - redis
         volumes:
-            - taiga-back-static:/usr/django/app/static
-            - taiga-back-media:/usr/django/app/media
+            - static:/usr/django/app/static
+            - media:/usr/django/app/media
         configs:
-              - source: django_settings
+              - source: taiga_django_settings
                 target: /usr/django/app/settings/local.py
-              - source: django_celery_settings
+              - source: taiga_django_celery_settings
                 target: /usr/django/app/settings/celery_local.py
-              - source: crontab
+              - source: taiga_crontab
                 target: /etc/crontab
         secrets:
             - source: taiga-back-settings-orus-io
@@ -190,9 +182,10 @@ services:
                     - node.labels.taiga == 1
 
     rabbitmq:
-        restart: always
-        image: rabbitmq:3.6-alpine
-        hostname: taiga
+        image: dockerhub.xcg.io/cloudcrane/rabbitmq:latest
+        secrets:
+            - source: taiga-rabbitmq-setup.sh
+              target: /run/rabbitmq-setup.sh
         networks:
             - taiga_network
         deploy:
@@ -203,7 +196,6 @@ services:
                     - node.labels.taiga == 1
 
     redis:
-        restart: always
         image: redis:4-alpine
         networks:
             - taiga_network
@@ -215,10 +207,7 @@ services:
                     - node.labels.taiga == 1
 
     taiga_events:
-        restart: always
         image: registry.orus.io/taiga-events:_3583834
-        tty: true
-        stdin_open: true
         secrets:
             - source: taiga-back-events-config
               target: config.json
@@ -232,10 +221,7 @@ services:
                     - node.labels.taiga == 1
 
     caddy:
-        restart: always
         image: registry.orus.io/taiga-front:3.4.0_0f6220f4
-        tty: true
-        stdin_open: true
         depends_on:
             - django
             - taiga_events
@@ -243,12 +229,12 @@ services:
             - taiga_network
             - http
         volumes:
-            - taiga-back-static:/srv/taiga-back-static
-            - taiga-back-media:/srv/taiga-back-media
+            - static:/srv/taiga-back-static
+            - media:/srv/taiga-back-media
         configs:
-            - source: caddyfile
+            - source: taiga_caddyfile
               target: /etc/caddy/Caddyfile
-            - source: front_json
+            - source: taiga_front_json
               target: /srv/taiga-front/conf.json
         deploy:
             mode: replicated
@@ -261,3 +247,4 @@ services:
             placement:
                 constraints:
                     - node.labels.taiga == 1
+
